@@ -1,16 +1,17 @@
 import React, { SyntheticEvent } from 'react'
-import { runInThisContext } from 'vm'
+import { User } from '../model/Model'
 import { AuthService } from '../services/AuthService'
 
 interface LoginProps {
-    authService: AuthService
+    authService: AuthService,
+    setUser: (user: User) => void
 }
 
 interface LoginState {
     userName: string,
     password: string,
     loginAttempted: boolean,
-    isLoggedIn: boolean
+    isLoggedIn: boolean,
 }
 
 interface CustomEvent {
@@ -23,7 +24,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
         userName: '',
         password: '',
         loginAttempted: false,
-        isLoggedIn: false
+        isLoggedIn: false,
     }
 
     private setUserName(event: CustomEvent){
@@ -40,6 +41,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
         const result = await this.props.authService.login(this.state.userName, this.state.password)
         if(result){
             this.setState({isLoggedIn: true})
+            this.props.setUser(result)
         } else {
             this.setState({isLoggedIn: false})
         }
